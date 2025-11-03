@@ -1,0 +1,753 @@
+<!DOCTYPE html><html class="no-js" lang="en"><head>
+
+    <meta charset="utf-8">
+   
+  <!-- Basic SEO -->
+  <title>Shot by JAR – Clean • Cinematic • Story-driven Videography</title>
+  <meta name="description"
+        content="Passionate videographer & editor creating clean, cinematic, story-driven visuals. From BTS magic to polished reels—every frame tells a story. DM to create visuals that stand out.">
+
+<!-- Open Graph (Facebook, WhatsApp, LinkedIn, X cards via OG) -->
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://shotbyjar.vercel.app/">
+<meta property="og:site_name" content="Shot by JAR">
+<meta property="og:title" content="Shot by JAR – Videographer & Editor">
+<meta property="og:description"
+      content="Clean • Cinematic • Story-driven | BTS & Tips. Passionate about storytelling through visuals—let's collaborate to bring your vision to life.">
+
+<!-- Primary preview (landscape) -->
+<meta property="og:image" content="https://res.cloudinary.com/dtfx1jpkq/image/upload/f_auto,q_auto,w_1200,h_630,c_fill/v1760448548/shots_eqy7rl.webp">
+<meta property="og:image:secure_url" content="https://res.cloudinary.com/dtfx1jpkq/image/upload/f_auto,q_auto,w_1200,h_630,c_fill/v1760448548/shots_eqy7rl.webp">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="Shot by JAR – Clean • Cinematic • Story-driven videography">
+
+<!-- Optional secondary (square) -->
+<meta property="og:image" content="https://res.cloudinary.com/dtfx1jpkq/image/upload/f_auto,q_auto,w_1080,h_1080,c_fill/v1760448672/jar_vdutwz.webp">
+<meta property="og:image:width" content="1080">
+<meta property="og:image:height" content="1080">
+
+<!-- Twitter Card -->
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Shot by JAR – Videographer & Editor">
+<meta name="twitter:description"
+      content="Cinematic visuals that resonate. Every frame tells a story, every edit shapes emotion.">
+<meta name="twitter:image" content="https://res.cloudinary.com/dtfx1jpkq/image/upload/f_auto,q_auto,w_1200,h_630,c_fill/v1760448548/shots_eqy7rl.webp">
+<meta name="twitter:image:alt" content="Shot by JAR – Clean • Cinematic • Story-driven videography">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!--Vendor CSS-->
+    <link rel="stylesheet" href="css/font-awesome.min.css">
+
+    <!--favicon-->
+    <link rel="shortcut icon" type="image/x-icon" href="images/new/fav.png">
+
+
+
+    <!--Plugins CSS-->
+    <link rel="stylesheet" href="css/magnific-popup.css">
+    <link rel="stylesheet" href="css/swiper.min.css">
+    <link rel="stylesheet" href="css/slick.css">
+
+    <!--Main Style CSS-->
+    <link rel="stylesheet" href="css/style.css">
+
+    <style>
+        @media (max-width: 767px) {
+            #shotbyjay {
+                display: none;
+            }
+        }
+
+        .reel-container {
+            position: relative;
+            display: inline-block;
+        }
+
+        .reel {
+            width: 100%;
+            height: auto;
+        }
+
+        .reel-play-btn {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: rgba(0, 0, 0, 0.5);
+            border: none;
+            color: white;
+            font-size: 24px;
+            cursor: pointer;
+            border-radius: 50%;
+            width: 60px;
+            height: 60px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0.8;
+            transition: opacity 0.3s;
+        }
+
+        .reel-play-btn:hover {
+            opacity: 1;
+        }
+
+        .video-modal[aria-hidden="true"] {
+            display: none;
+        }
+
+        .video-modal[aria-hidden="false"] {
+            display: block;
+        }
+    </style>
+
+</head>
+
+<body>
+
+    <!-- Header Start -->
+    <div class="header-section section">
+        <div class="container">
+            <div class="row align-items-center">
+
+                <!-- Site Logo Start -->
+                <div class="col-xl-auto col">
+                    <div class="site-logo">
+                        <a href="index.html">
+                            <img class="logo-dark d-none d-lg-block" src="images/new/logo.webp" style="height: 70px; width: auto;" alt="rstate">
+                            <img class="logo-light d-lg-none" src="images/new/logowhite.png" style="height: 110px; width: auto;" alt="rstate">
+                        </a>
+                    </div>
+                </div>
+                <!-- Site Logo End -->
+
+                <!-- Site Main Navigation Start -->
+                <div class="col d-none d-xl-block">
+                    <nav class="main-menu">
+                                <ul>
+               
+                </ul>
+                    </nav>
+                </div>
+                <!-- Site Main Navigation End -->
+
+                <!-- Header Toggle Buttons Start -->
+                <div class="col-auto">
+                    <div class="header-toggle-buttons header-toggle-buttons-light">
+                        <a href="#widget-offcanvas" class="offcanvas-toggle d-none d-xl-flex"><i class="bar"></i> <i class="bar"></i> <i class="bar"></i></a>
+                        <a href="#offcanvas-mobile-menu" class="menu-toggle d-xl-none"><i class="bar"></i> <i class="bar"></i> <i class="bar"></i></a>
+                    </div>
+                </div>
+                <!-- Header Toggle Buttons End -->
+
+                <!-- Mobile Menu Start -->
+                <div class="col-12 d-none">
+                    <div class="mobile-menu">
+                                    <ul>
+                   
+                </ul>
+                    </div>
+                </div>
+                <!-- Mobile Menu End -->
+
+            </div>
+        </div>
+    </div>
+    <!-- Header End -->
+
+    <!-- Fullscreen Search Start  -->
+    <div id="fullscreen-search" class="fullscreen-search">
+        <button class="close-btn" data-target="#fullscreen-search">close</button>
+        <div class="fullscreen-search-form">
+            <form action="#">
+                <input class="form-control" type="text" placeholder="Search..">
+                <button class="btn btn-primary px-6"><i class="fa fa-search"></i></button>
+            </form>
+        </div>
+    </div>
+    <!-- Fullscreen Search End  -->
+
+    <!-- Widget Offcanvas Start  -->
+    <div id="widget-offcanvas" class="widget-offcanvas">
+        <button class="close-btn" data-target="#widget-offcanvas">close</button>
+        <div class="inner">
+
+            <div class="offcanvas-about mb-8">
+                <img src="images/new/logowhite.png" style="height: 110px; width: auto;" alt="">
+                <p>"Videography is the silent poet of the visual world, weaving emotions into every frame, turning fleeting moments into eternal stories."</p>
+            </div>
+            <div class="offcanvas-contact">
+                <h3 class="title">Contact Me</h3>
+                <ul class="contact-info">
+                    <li>Phone : +1 (661) 809-4715</li>
+                    <!-- <li>Email : support@geekstudio.com</li> -->
+                    <li>@shotbyjar</li>
+                </ul>
+                <div class="social">
+                    
+                    <a href="https://www.instagram.com/shotbyjar/"><i class="fa fa-instagram"></i></a>
+                </div>
+            </div>
+
+        </div>
+    </div>
+    <!-- Widget Offcanvas Start  -->
+
+    <!-- Offcanvas Menu Start  -->
+    <div id="offcanvas-mobile-menu" class="offcanvas-mobile-menu">
+        <button class="close-btn" data-target="#offcanvas-mobile-menu">close</button>
+        <div class="inner">
+  <div class="offcanvas-about mb-8">
+                <img src="images/new/logowhite.png" style="height: 110px; width: auto;" alt="">
+                <p>"Videography is the silent poet of the visual world, weaving emotions into every frame, turning fleeting moments into eternal stories."</p>
+            </div>
+            <div class="offcanvas-contact">
+                <h3 class="title">Contact Me</h3>
+                <ul class="contact-info">
+                    <li>Phone : +1 (661) 809-4715</li>
+                    <!-- <li>Email : support@geekstudio.com</li> -->
+                    <li>@shotbyjar</li>
+                </ul>
+                <div class="social">
+                    
+                    <a href="https://www.instagram.com/shotbyjar/"><i class="fa fa-instagram"></i></a>
+                </div>
+            </div>
+
+        </div>
+    </div>
+    <!-- Offcanvas Menu Start  -->
+
+
+
+    <!--Main Content Wrapper Start-->
+    <div id="content-wrapper">
+
+        <!-- Gallery Section Start -->
+        <!-- Gallery / Reels -->
+<section class="gallery-section section position-relative" data-edit-id="hero-section" data-edit-type="hero-section">
+
+  <!-- Hero Background + Play -->
+  <div class="gallery-hero" style="margin-bottom: 40px;">
+    <!-- Use any image you like here as the static background -->
+    <div class="gallery-hero-bg" style="background-image:url('images/new/galgal.webp');" data-edit-id="hero-bg-image" data-edit-type="background-image" data-default-bg="images/new/galgal.webp"></div>
+
+    <div class="gallery-title-video-popup">
+      <div class="section-title mb-lg-10 mb-6">
+        <h2 class="title" data-edit-id="hero-title" data-edit-type="text">Shot by JAR</h2>
+      </div>
+
+      <!-- Play button triggers modal with the main video -->
+      <button class="gallery-play-btn" id="openMainVideo" aria-label="Play showreel">
+        <i class="fa fa-play"></i>
+      </button>
+    </div>
+  </div>
+
+  <!-- Auto-playing reels (muted) below -->
+  <div class="container" style="margin-bottom: 40px;">
+    <div class="reels-row">
+      <div class="reel-container">
+        <video class="reel" preload="metadata" muted loop autoplay playsinline
+          src="https://res.cloudinary.com/dtfx1jpkq/video/upload/v1760439820/Give_God_A_Chance_V5_kyopj4.mp4" data-edit-id="reel-1" data-edit-type="video"></video>
+        <button class="reel-play-btn" aria-label="Play video">
+          <i class="fa fa-play"></i>
+        </button>
+      </div>
+      <div class="reel-container">
+        <video class="reel" preload="metadata" muted loop autoplay playsinline
+          src="https://res.cloudinary.com/dtfx1jpkq/video/upload/v1760439675/Food_And_Drinks_rhyqkv.mp4" data-edit-id="reel-2" data-edit-type="video"></video>
+        <button class="reel-play-btn" aria-label="Play video">
+          <i class="fa fa-play"></i>
+        </button>
+      </div>
+      <div class="reel-container">
+        <video class="reel" preload="metadata" muted loop autoplay playsinline
+          src="https://res.cloudinary.com/dtfx1jpkq/video/upload/v1760439558/Fire_Dancer_vvb6w7.mp4" data-edit-id="reel-3" data-edit-type="video"></video>
+        <button class="reel-play-btn" aria-label="Play video">
+          <i class="fa fa-play"></i>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Minimal modal for the main video -->
+  <div class="video-modal" id="videoModal" aria-hidden="true" style="position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0,0,0,0.8); z-index: 9999;">
+    <div class="video-modal__backdrop" id="closeVideo" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%;"></div>
+    <div class="video-modal__dialog" role="dialog" aria-modal="true" aria-labelledby="videoTitle" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; display: flex; align-items: center; justify-content: center;">
+      <button class="video-modal__close" id="closeVideoBtn" aria-label="Close video" style="position: absolute; top: 20px; left: 20px; background: none; border: none; color: white; font-size: 30px; cursor: pointer;">&times;</button>
+      <h3 id="videoTitle" class="sr-only">Main Video</h3>
+      <video id="mainVideo" controls playsinline preload="metadata" style="width: 90%; height: 80%;"
+        src="https://res.cloudinary.com/dtfx1jpkq/video/upload/v1758890183/main_vid_pahj18.mp4" data-edit-id="main-video" data-edit-type="video"></video>
+    </div>
+  </div>
+</section>
+
+        <!-- Gallery Section End -->
+
+<!-- Book Consultation CTA After Videos -->
+<div class="text-center mb-12">
+  <h3 data-edit-id="cta1-title" data-edit-type="text">Transform Ideas into Visual Stories</h3>
+  <p data-edit-id="cta1-desc" data-edit-type="text">Unlock the power of cinematic storytelling to elevate your brand and captivate your audience.</p>
+  <a href="https://calendly.com/justjarediting/project-onboarding"
+     target="_blank"
+     rel="noopener"
+     class="btn btn-primary btn-lg">
+     Book a Free Consultation
+  </a>
+</div>
+
+    <!-- Slider One Section Start -->
+    <div class="section slider1-section">
+        <div class="container position-relative">
+
+
+
+            <!-- Slider One Shape Start -->
+            <span class="slider1-shape"></span>
+            <!-- Slider One Shape End -->
+
+            <div class="row mb-n6">
+
+                <!-- Slider One Left Satrt  with HERO IMAGE-->
+                <div class="col-xl-6 col-lg-5 col-12 mb-6">
+                    <div class="slider1-static-image">
+                        <img src="images/new/heroimage.jpeg" alt="Slider Static Image" data-edit-id="hero-image" data-edit-type="image">
+                        <!-- <span class="special-title">Clean. Strategic. Impactful.</span> -->
+
+                        <!-- Slider One Social Start -->
+                        <ul class="social">
+                            <li><a href="https://www.instagram.com/shotbyjar/"><i class="fa fa-instagram"></i>instagram</a></li>
+                        </ul>
+                        <!-- Slider One Social End -->
+
+                        <!-- Slider One Scroll Start -->
+                        <span class="scroll">Scroll down</span>
+                        <!-- Slider One Scroll End -->
+                    </div>
+                </div>
+                <!-- Slider One Left End -->
+
+                <!-- Slider One Right Start -->
+                <div class="d-flex flex-wrap col-xl-6 col-lg-7 col-12 mb-6">
+                    <div class="slider1-static-content">
+                    <img id="shotbyjay" src="images/new/logo.webp" style="height: 300px; width: auto;" data-edit-id="logo-main" data-edit-type="image">
+                    </div>
+<div class="text-center mb-12">
+  <h3 data-edit-id="cta2-title" data-edit-type="text">Ready to Elevate Your Brand?</h3>
+  <p data-edit-id="cta2-desc" data-edit-type="text">See how our cinematic approach can transform your story into impactful visuals.</p>
+  <a href="https://calendly.com/justjarediting/project-onboarding"
+     target="_blank"
+     rel="noopener"
+     class="btn btn-default-outline btn-lg">
+     Book a Free Consultation
+  </a>
+</div>-
+                </div>
+                <!-- Slider One Right End -->
+
+            </div>
+        </div>
+    </div>
+    <!-- Slider One Section End -->
+
+        <!-- About Section Start -->
+        <div class="about-section stickySidebar-container section section-margin position-relative">
+            <div class="container">
+                <div class="row mb-n6">
+
+                    <div class="col-lg-6 col-md-10 col-12 mb-6 mt-xl-20">
+                        <div class="section-title mb-lg-8 mb-md-6 mb-sm-5 mb-4">
+                            <h2 class="title" data-edit-id="about-title" data-edit-type="text">ABOUT ME</h2>
+                        </div>
+                        <div class="about-content">
+                            <p data-edit-id="about-p1" data-edit-type="text"><strong>I'm Jar — a Houston-based creative turning everyday brands into cinematic experiences.</strong></p>
+                            <p data-edit-id="about-p2" data-edit-type="text">At ShotByJar, I don't just make videos — I craft visuals that convert.</p>
+                            <p data-edit-id="about-p3" data-edit-type="text">Every frame is designed to tell your story, move your audience, and turn attention into action.</p>
+                            <p data-edit-id="about-p4" data-edit-type="text">🎥 <strong>Clean. Strategic. Impactful.</strong></p>
+                        </div>
+                     <div class="text-center mb-12">
+  <h3 data-edit-id="cta3-title" data-edit-type="text">Partner for Visual Excellence</h3>
+  <p data-edit-id="cta3-desc" data-edit-type="text">Collaborate with a filmmaker dedicated to crafting narratives that engage and inspire your audience.</p>
+  <a href="https://calendly.com/justjarediting/project-onboarding"
+     target="_blank"
+     rel="noopener"
+     class="btn btn-default-outline btn-lg">
+     Book a Free Consultation
+  </a>
+</div>
+                    </div>
+
+                    <div class="col-lg-6 col-12 mb-6">
+                        <div class="row">
+                            <div class="col-12 mb-lg-10">
+                                <div class="about-testimonial-active swiper-container">
+                                    <div class="swiper-wrapper">
+                                        <div class="swiper-slide">
+                                            <div class="about-image">
+                                                <img src="images/new/Testimonial1.webp" alt="Testimonial Image" data-edit-id="testimonial-1" data-edit-type="image">
+                                            </div>
+                                        </div>
+                                        <div class="swiper-slide">
+                                            <div class="about-image">
+                                                <img src="images/new/Testimonial2.webp" alt="Testimonial Image" data-edit-id="testimonial-2" data-edit-type="image">
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="about-testimonial-navigation">
+                                        <div class="about-testimonial-prev swiper-button-prev"><img class="svg-inject" src="images/chevron-left.svg" alt="Previous"></div>
+                                        <div class="about-testimonial-next swiper-button-next"><img class="svg-inject" src="images/chevron-right.svg" alt="Next"></div>
+                                        <div class="about-testimonial-pagination swiper-pagination"></div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="text-center col-12 mt-10">
+                                <a href="https://www.instagram.com/shotbyjar/" class="btn btn-default-outline">VIEW COLLECTIONS</a>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+       
+        </div>
+        <!-- About Section End -->
+
+<!-- Book Consultation CTA After Testimonials 
+<div class="text-center mb-12">
+  <h3>Ready to Elevate Your Brand?</h3>
+  <p>See how our cinematic approach can transform your story into impactful visuals.</p>
+  <a href="https://calendly.com/justjarediting/project-onboarding"
+     target="_blank"
+     rel="noopener"
+     class="btn btn-default-outline btn-lg">
+     Book a Free Consultation
+  </a>
+</div>-->
+
+        <!-- About Toolbar Popup Wrapper Start -->
+        <div class="about-toolbar-popup-wrapper">
+
+            <!-- Opening Hours Start -->
+            <div id="opening-hours-popup" class="opening-hours-popup about-toolbar-popup">
+                <button class="popup-close" data-target="#opening-hours-popup"><img src="images/popup-close.svg" alt="" class="svg-inject"></button>
+                <div class="image"><img src="images/opening-hours-popup.jpg" alt="Opening Hours Popup Image"></div>
+                <div class="content">
+                    <div class="opening-hours-content">
+                        <h3 class="title">Opening hours</h3>
+                        <ul class="info">
+                            <li class="day">Monday - Friday</li>
+                            <li class="time">08.00 am - 16.00 pm</li>
+                            <li class="phone">+24 45 15 62 129</li>
+                        </ul>
+
+                    </div>
+                </div>
+            </div>
+            <!-- Opening Hours End -->
+
+            <!-- Address Start -->
+            <div id="address-popup" class="address-popup about-toolbar-popup">
+                <button class="popup-close" data-target="#address-popup"><img src="images/popup-close.svg" alt="" class="svg-inject"></button>
+                <div class="image"><img src="images/address-popup.jpg" alt="Address Popup Image"></div>
+                <div class="content">
+                    <div class="address-content">
+                        <h3 class="title">Address</h3>
+                        <p>2, Ave Manchester, Lorem ipsum St, Rio Danubin</p>
+                        <a href="#">Open In Map</a>
+                    </div>
+                </div>
+            </div>
+            <!-- Address End -->
+
+            <!-- Query Start -->
+            <div id="query-popup" class="query-popup about-toolbar-popup">
+                <button class="popup-close" data-target="#query-popup"><img src="images/popup-close.svg" alt="" class="svg-inject"></button>
+                <div class="image"><img src="images/query-popup.jpg" alt="query Popup Image"></div>
+                <div class="content">
+                    <div class="query-content">
+                        <h3 class="title">You have a question for us?</h3>
+                        <p>leave your message below or email us at <br> info@geekstudio.com</p>
+                            <div class="query-form">
+                                <form action="#">
+                                    <div class="row mb-n6">
+                                        <div class="col-12 mb-6">
+                                            <label for="query-email">Email Address *</label>
+                                            <input type="email" id="query-email" placeholder="info@geekstudio.com">
+                                        </div>
+                                        <div class="col-12 mb-6">
+                                            <label for="query-message">Message *</label>
+                                            <textarea id="query-message" placeholder="Hello ! I am from Dhaka Bangladesh .........."></textarea>
+                                            <small class="message-info">120 characters left</small>
+                                        </div>
+                                        <div class="col-12 mb-6"><button class="query-submit">Send Message</button></div>
+                                    </div>
+                                </form>
+                            </div>
+                    </div>
+                </div>
+            </div>
+            <!-- Query End -->
+
+        </div>
+        <!-- About Toolbar Popup Wrapper End -->
+
+
+
+
+
+
+        <!-- Testimonial Section Start -
+        <div class="testimonial-section section" style="margin-top: 100px;">
+            <div class="container">
+
+             
+                <div class="section-title text-center mb-10">
+                    <h2 class="title">TESTIMONIAL</h2>
+                </div>
+
+            </div>
+            <div class="testimonial-slider-wrapper">
+                <div class="container">
+
+                    <div class="testimonial-slider swiper-container">
+                        <div class="swiper-wrapper">
+                            <div class="swiper-slide">
+                                <div class="testimonial row mb-n6">
+                                    <div class="col-lg-6 mb-6">
+                                        <div class="testimonial-image">
+                                            <img src="images/testimonial-1.jpg" alt="Testimonial Image">
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-6 mb-6">
+                                        <div class="testimonial-content">
+                                            <div class="summery">
+                                                <p>There are many variations of passages of Lorem Ipsum available, but the majority have suffered alteration in some form, by injected humour, or randomised words which don't look even slightly believable. Praesent hendrerit, ipsum commodo tristique pulvinar, lectus felis auctor diam, at sollicitudin turpis risus sit amet justo. Proin velit turpis, viverra at hendrerit</p>
+                                                <p>elementum nec dui. Nullam eget tincidunt odio. Ut maximus eros et massa congue, tempus egestas justo lacinia. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos.</p>
+                                            </div>
+                                            <div class="author">
+                                                <span class="name">Mira Bie</span>
+                                                <span class="designation">Creative Director</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="swiper-slide">
+                                <div class="testimonial row mb-n6">
+                                    <div class="col-lg-6 mb-6">
+                                        <div class="testimonial-image">
+                                            <img src="images/testimonial-2.png" alt="Testimonial Image">
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-6 mb-6">
+                                        <div class="testimonial-content">
+                                            <div class="summery">
+                                                <p>There are many variations of passages of Lorem Ipsum available, but the majority have suffered alteration in some form, by injected humour, or randomised words which don't look even slightly believable. Praesent hendrerit, ipsum commodo tristique pulvinar, lectus felis auctor diam, at sollicitudin turpis risus sit amet justo. Proin velit turpis, viverra at hendrerit</p>
+                                                <p>elementum nec dui. Nullam eget tincidunt odio. Ut maximus eros et massa congue, tempus egestas justo lacinia. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos.</p>
+                                            </div>
+                                            <div class="author">
+                                                <span class="name">Mira Bie</span>
+                                                <span class="designation">Creative Director</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="swiper-slide">
+                                <div class="testimonial row mb-n6">
+                                    <div class="col-lg-6 mb-6">
+                                        <div class="testimonial-image">
+                                            <img src="images/testimonial-3.png" alt="Testimonial Image">
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-6 mb-6">
+                                        <div class="testimonial-content">
+                                            <div class="summery">
+                                                <p>There are many variations of passages of Lorem Ipsum available, but the majority have suffered alteration in some form, by injected humour, or randomised words which don't look even slightly believable. Praesent hendrerit, ipsum commodo tristique pulvinar, lectus felis auctor diam, at sollicitudin turpis risus sit amet justo. Proin velit turpis, viverra at hendrerit</p>
+                                                <p>elementum nec dui. Nullam eget tincidunt odio. Ut maximus eros et massa congue, tempus egestas justo lacinia. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos.</p>
+                                            </div>
+                                            <div class="author">
+                                                <span class="name">Mira Bie</span>
+                                                <span class="designation">Creative Director</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="testimonial-next swiper-button-next d-none d-lg-block"><img class="svg-inject" src="images/long-arrow-right-2.svg" alt="Next Slide"></div>
+                        <div class="testimonial-prev swiper-button-prev d-none d-lg-block"><img class="svg-inject" src="images/long-arrow-left-2.svg" alt="Previous Slide"></div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+        Testimonial Section End -->
+
+
+
+    </div>
+    <!--Main Content Wrapper End-->
+
+    <!--Footer Area Start-->
+    <!-- Footer Start -->
+    <div class="footer-section section" >
+
+        <!-- Footer Top Start -->
+        <div class="footer-top-section section">
+            <div class="container">
+                <div class="row mb-n6">
+
+                    <!-- Subscrube & Banner Widget Start -->
+                    <div class="col-xl-9 col-lg-8 col-12 mb-6">
+                        <div class="row mb-n6">
+
+
+                        </div>
+                    </div>
+                    <!-- Subscrube & Banner Widget End -->
+
+                    <div class="col-12 mb-6">
+                        <div class="row justify-content-between mb-n6">
+
+                            <!-- Banner Widget Start -->
+                            <div class="col-lg-6 col-md-7 col-12 align-self-end mb-6">
+                                <div class="footer-banner-widget row mb-n6">
+
+
+                                </div>
+                            </div>
+                            <!-- Banner Widget End -->
+
+                            <!-- Contact Widget Start -->
+                            <div class="col-lg-auto col-md-5 mb-6">
+                                <div class="footer-contact-widget">
+                                    <img class="logo" src="images/new/logo.webp" style="height: 100px; width: auto;" alt="GeekStudio">
+                                    <ul class="contact-info">
+                                        <li>justjarediting@gmail.com</li>
+                                        <li> <a href="#">@shotsbyjar</a></li>
+                                    </ul>
+                                    <div class="social">
+                                        <a href="https://www.instagram.com/shotbyjar/"><i class="fa fa-instagram"></i></a>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- Contact Widget End -->
+
+                        </div>
+                    </div>
+
+                </div>
+
+            </div>
+        </div>
+        <!-- Footer Top End -->
+
+        <!-- Footer Bottom Start -->
+        <div class="footer-bottom-section section">
+            <div class="container">
+                <div class="row">
+
+                    <div class="col">
+<p class="copyright">ShotByJar is owned and operated by Edison’s Growth Partners LLC.<br>© 2025 All rights reserved.</p>
+                    </div>
+
+                </div>
+
+            </div>
+        </div>
+        <!-- Footer Bottom End -->
+
+    </div>
+    <!-- Footer End -->
+    <!--Footer Area End-->
+
+    <!-- Ventor JS -->
+    <script src="js/modernizr-3.8.0.min.js"></script>
+    <script src="js/jquery-3.4.1.min.js"></script>
+    <script src="js/bootstrap.bundle.min.js"></script>
+
+    <!-- Plugins JS -->
+    <script src="js/swiper.min.js"></script>
+    <script src="js/slick.min.js"></script>
+    <script src="js/jquery.waypoints.min.js"></script>
+    <script src="js/jquery.magnific-popup.min.js"></script>
+    <script src="js/jquery.ajaxchimp.min.js"></script>
+    <script src="js/jquery.counterup.min.js"></script>
+    <script src="js/svg-inject.min.js"></script>
+    <script src="js/ResizeSensor.js"></script>
+    <script src="js/jquery.sticky-sidebar.min.js"></script>
+    <script src="js/imagesloaded.pkgd.min.js"></script>
+    <script src="js/isotope.pkgd.min.js"></script>
+    <script src="js/instafeed.min.js"></script>
+    <script src="js/jquery.countdown.min.js"></script>
+    <script src="js/jquery.easypiechart.js"></script>
+
+    <!-- Activation JS -->
+    <script src="js/active.js"></script>
+
+    <!-- CMS Script -->
+    <script src="js/cms.js"></script>
+
+
+    <script>
+  (function () {
+    const openBtn = document.getElementById('openMainVideo');
+    const modal = document.getElementById('videoModal');
+    const closeBackdrop = document.getElementById('closeVideo');
+    const closeBtn = document.getElementById('closeVideoBtn');
+    const mainVideo = document.getElementById('mainVideo');
+    const reels = document.querySelectorAll('.reel');
+    const reelPlayBtns = document.querySelectorAll('.reel-play-btn');
+
+    function pauseAllReels() {
+      reels.forEach(reel => reel.pause());
+    }
+
+    function openModalWithVideo(src) {
+      mainVideo.src = src;
+      modal.classList.add('is-open');
+      modal.setAttribute('aria-hidden', 'false');
+      mainVideo.currentTime = 0;
+      // Pause reels
+      pauseAllReels();
+      // Start playing when metadata is ready (Safari friendly)
+      const tryPlay = () => mainVideo.play().catch(() => {});
+      if (mainVideo.readyState >= 2) tryPlay();
+      else mainVideo.addEventListener('loadeddata', tryPlay, { once: true });
+    }
+
+    function closeModal() {
+      modal.classList.remove('is-open');
+      modal.setAttribute('aria-hidden', 'true');
+      mainVideo.pause();
+    }
+
+    openBtn.addEventListener('click', () => openModalWithVideo('https://res.cloudinary.com/dtfx1jpkq/video/upload/v1758890183/main_vid_pahj18.mp4'));
+
+    reelPlayBtns.forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        const container = e.target.closest('.reel-container');
+        const video = container.querySelector('.reel');
+        openModalWithVideo(video.src);
+      });
+    });
+
+    closeBackdrop.addEventListener('click', closeModal);
+    closeBtn.addEventListener('click', closeModal);
+
+    // Esc to close
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && modal.classList.contains('is-open')) closeModal();
+    });
+
+  })();
+</script>
+
+
+
+
+</body></html>
