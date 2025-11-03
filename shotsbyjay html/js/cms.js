@@ -361,6 +361,59 @@
                 resize: vertical;
             }
 
+            .cms-rich-editor {
+                width: 100%;
+                min-height: 200px;
+                padding: 15px;
+                border: 2px solid #ddd;
+                border-radius: 4px;
+                font-size: 14px;
+                font-family: inherit;
+                background: white;
+                overflow-y: auto;
+                max-height: 400px;
+            }
+
+            .cms-rich-editor:focus {
+                outline: none;
+                border-color: #3b82f6;
+            }
+
+            .cms-editor-toolbar {
+                display: flex;
+                gap: 5px;
+                margin-bottom: 10px;
+                padding: 8px;
+                background: #f3f4f6;
+                border-radius: 4px;
+                flex-wrap: wrap;
+            }
+
+            .cms-format-btn {
+                padding: 6px 12px;
+                background: white;
+                border: 1px solid #ddd;
+                border-radius: 3px;
+                cursor: pointer;
+                font-size: 14px;
+                font-weight: bold;
+                transition: all 0.2s;
+            }
+
+            .cms-format-btn:hover {
+                background: #e5e7eb;
+                border-color: #9ca3af;
+            }
+
+            .cms-format-btn:active {
+                background: #d1d5db;
+            }
+
+            #fontSize {
+                min-width: 80px;
+                font-weight: normal;
+            }
+
             .cms-form-actions {
                 display: flex;
                 gap: 10px;
@@ -552,13 +605,35 @@
             modalBody.innerHTML = `
                 <div class="cms-form-group">
                     <label>Content:</label>
-                    <textarea id="editContent">${element.innerHTML}</textarea>
+                    <div class="cms-editor-toolbar">
+                        <select id="fontSize" class="cms-format-btn" title="Font Size">
+                            <option value="">Size</option>
+                            <option value="1">Small</option>
+                            <option value="3">Normal</option>
+                            <option value="5">Large</option>
+                            <option value="7">Huge</option>
+                        </select>
+                        <button type="button" class="cms-format-btn" onclick="document.execCommand('bold', false, null)" title="Bold"><b>B</b></button>
+                        <button type="button" class="cms-format-btn" onclick="document.execCommand('italic', false, null)" title="Italic"><i>I</i></button>
+                        <button type="button" class="cms-format-btn" onclick="document.execCommand('underline', false, null)" title="Underline"><u>U</u></button>
+                        <button type="button" class="cms-format-btn" onclick="document.execCommand('strikeThrough', false, null)" title="Strikethrough"><s>S</s></button>
+                    </div>
+                    <div id="editContent" contenteditable="true" class="cms-rich-editor">${element.innerHTML}</div>
                 </div>
                 <div class="cms-form-actions">
                     <button class="cms-btn cms-btn-secondary" onclick="window.cmsCloseModal()">Cancel</button>
                     <button class="cms-btn" onclick="window.cmsSaveText('${elementId}')">Save</button>
                 </div>
             `;
+
+            // Setup font size selector
+            setTimeout(() => {
+                document.getElementById('fontSize').addEventListener('change', (e) => {
+                    if (e.target.value) {
+                        document.execCommand('fontSize', false, e.target.value);
+                    }
+                });
+            }, 0);
         } else if (contentType === 'background-image') {
             // Extract URL from background-image style
             const bgStyle = element.style.backgroundImage;
@@ -821,7 +896,9 @@
 
     // Save text content
     async function saveText(elementId) {
-        const content = document.getElementById('editContent').value;
+        const contentElement = document.getElementById('editContent');
+        // Get innerHTML from contenteditable div instead of textarea value
+        const content = contentElement.innerHTML || contentElement.value;
         const element = document.querySelector(`[data-edit-id="${elementId}"]`);
 
         try {
