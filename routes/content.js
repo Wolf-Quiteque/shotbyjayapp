@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router();
 const ContentBlock = require('../models/ContentBlock');
 const Page = require('../models/Page');
+const Media = require('../models/Media');
 const authMiddleware = require('../middleware/auth');
 
 /**
@@ -50,6 +51,32 @@ router.put('/:webId/:pageId/:elementId', authMiddleware, async (req, res) => {
       { upsert: true, new: true }
     );
 
+    // If content is an image or video URL, mark it as used in Media collection
+    if (['image', 'video', 'background-image'].includes(contentType) && content) {
+      try {
+        const media = await Media.findOne({ url: content });
+        if (media) {
+          // Check if this usage already exists
+          const usageExists = media.usedIn.some(
+            usage => usage.pageId === pageId && usage.elementId === elementId
+          );
+
+          if (!usageExists) {
+            await Media.findOneAndUpdate(
+              { url: content },
+              {
+                isUsed: true,
+                $addToSet: { usedIn: { pageId, elementId } }
+              }
+            );
+          }
+        }
+      } catch (mediaError) {
+        console.error('Error updating media usage:', mediaError);
+        // Don't fail the content update if media tracking fails
+      }
+    }
+
     res.json({ success: true, contentBlock });
   } catch (error) {
     console.error('Error updating content:', error);
@@ -65,6 +92,33 @@ router.put('/:webId/:pageId/:elementId', authMiddleware, async (req, res) => {
 router.delete('/:webId/:pageId/:elementId', authMiddleware, async (req, res) => {
   try {
     const { webId, pageId, elementId } = req.params;
+
+    // Get the content block before deleting to check if it's media
+    const contentBlock = await ContentBlock.findOne({ webId, pageId, elementId });
+
+    if (contentBlock && ['image', 'video', 'background-image'].includes(contentBlock.contentType)) {
+      try {
+        // Remove this usage from the media document
+        await Media.findOneAndUpdate(
+          { url: contentBlock.content },
+          {
+            $pull: { usedIn: { pageId, elementId } }
+          }
+        );
+
+        // Check if media is still used elsewhere, if not mark as unused
+        const media = await Media.findOne({ url: contentBlock.content });
+        if (media && media.usedIn.length === 0) {
+          await Media.findOneAndUpdate(
+            { url: contentBlock.content },
+            { isUsed: false }
+          );
+        }
+      } catch (mediaError) {
+        console.error('Error updating media usage on delete:', mediaError);
+        // Don't fail the content deletion if media tracking fails
+      }
+    }
 
     await ContentBlock.findOneAndDelete({ webId, pageId, elementId });
 
