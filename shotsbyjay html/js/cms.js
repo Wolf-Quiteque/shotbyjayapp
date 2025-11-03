@@ -9,6 +9,11 @@
     let contentOverrides = {};
     let userId = null;
 
+    // Expose globally for slider editor
+    window.WEB_ID = WEB_ID;
+    window.PAGE_ID = PAGE_ID;
+    window.contentOverrides = contentOverrides;
+
     // Initialize CMS
     async function init() {
         userId = getUserId();
@@ -44,6 +49,7 @@
         try {
             const response = await fetch(`/api/content/${WEB_ID}/${PAGE_ID}`);
             contentOverrides = await response.json();
+            window.contentOverrides = contentOverrides; // Update global reference
         } catch (error) {
             console.error('Failed to load content overrides:', error);
         }
@@ -57,23 +63,48 @@
                 const override = contentOverrides[elementId];
 
                 if (override.contentType === 'text') {
-                    element.textContent = override.content;
+                    element.innerHTML = override.content;
                 } else if (override.contentType === 'image') {
                     element.src = override.content;
                 } else if (override.contentType === 'video') {
                     element.src = override.content;
                 } else if (override.contentType === 'background-image') {
                     element.style.backgroundImage = `url('${override.content}')`;
+                } else if (override.contentType === 'button') {
+                    const data = JSON.parse(override.content);
+                    element.textContent = data.text;
+                    element.href = data.link;
+                } else if (override.contentType === 'slider') {
+                    applySliderOverride(element, JSON.parse(override.content));
                 }
             }
         });
     }
 
-    // Track page view
+    // Track page view with enhanced analytics
     async function trackPageView() {
         try {
             const isNewUser = !localStorage.getItem('cms_has_visited');
+            const sessionId = sessionStorage.getItem('cms_session_id') || userId;
 
+            if (!sessionStorage.getItem('cms_session_id')) {
+                sessionStorage.setItem('cms_session_id', sessionId);
+            }
+
+            // Track time on page
+            const pageLoadTime = Date.now();
+            let maxScrollDepth = 0;
+
+            // Monitor scroll depth
+            function updateScrollDepth() {
+                const scrollPercentage = (window.scrollY + window.innerHeight) / document.documentElement.scrollHeight * 100;
+                maxScrollDepth = Math.max(maxScrollDepth, Math.min(100, scrollPercentage));
+            }
+
+            window.addEventListener('scroll', updateScrollDepth);
+            updateScrollDepth(); // Initial call
+
+            // Send tracking data
             await fetch('/api/analytics/track', {
                 method: 'POST',
                 headers: {
@@ -83,15 +114,64 @@
                     webId: WEB_ID,
                     pageId: PAGE_ID,
                     userId: userId,
-                    isNewUser: isNewUser
+                    sessionId: sessionId,
+                    isNewUser: isNewUser,
+                    pageUrl: window.location.href,
+                    pageTitle: document.title
                 })
             });
 
             if (isNewUser) {
                 localStorage.setItem('cms_has_visited', 'true');
             }
+
+            // Send engagement data before user leaves
+            window.addEventListener('beforeunload', async () => {
+                const timeOnPage = Math.floor((Date.now() - pageLoadTime) / 1000); // in seconds
+
+                // Use sendBeacon for reliable tracking on page unload
+                const data = {
+                    webId: WEB_ID,
+                    pageId: PAGE_ID,
+                    userId: userId,
+                    sessionId: sessionId,
+                    isNewUser: false,
+                    pageUrl: window.location.href,
+                    pageTitle: document.title,
+                    timeOnPage: timeOnPage,
+                    scrollDepth: Math.floor(maxScrollDepth)
+                };
+
+                navigator.sendBeacon('/api/analytics/track', JSON.stringify(data));
+            });
         } catch (error) {
             console.error('Failed to track page view:', error);
+        }
+    }
+
+    // Apply slider override (rebuild slider with new images)
+    function applySliderOverride(sliderElement, slides) {
+        const wrapper = sliderElement.querySelector('.swiper-wrapper');
+        if (!wrapper) return;
+
+        // Clear existing slides
+        wrapper.innerHTML = '';
+
+        // Add new slides
+        slides.forEach(slide => {
+            const slideDiv = document.createElement('div');
+            slideDiv.className = 'swiper-slide';
+            slideDiv.innerHTML = `
+                <div class="about-image">
+                    <img src="${slide.url}" alt="${slide.alt || 'Slide image'}">
+                </div>
+            `;
+            wrapper.appendChild(slideDiv);
+        });
+
+        // Reinitialize Swiper if it exists
+        if (window.Swiper && sliderElement.swiper) {
+            sliderElement.swiper.update();
         }
     }
 
@@ -152,14 +232,15 @@
                 font-size: 22px !important;
                 cursor: pointer !important;
                 z-index: 10000 !important;
-                opacity: 1 !important;
-                transition: all 0.2s;
+                opacity: 0 !important;
+                transition: all 0.3s ease !important;
                 box-shadow: 0 4px 12px rgba(0,0,0,0.5) !important;
                 pointer-events: auto !important;
                 border: 2px solid white !important;
             }
 
             .cms-edit-mode [data-edit-id]:hover .cms-edit-icon {
+                opacity: 1 !important;
                 transform: scale(1.15);
                 background: rgba(59, 130, 246, 1) !important;
             }
@@ -298,7 +379,7 @@
                 padding-bottom: 60px;
             }
 
-            /* Make hero section edit icon extra visible */
+            /* Make hero section edit icon extra visible on hover */
             .cms-edit-mode [data-edit-type="hero-section"] > .cms-edit-icon {
                 width: 60px !important;
                 height: 60px !important;
@@ -307,21 +388,24 @@
                 right: 20px !important;
                 background: rgba(239, 68, 68, 0.95) !important;
                 border: 3px solid white !important;
+                opacity: 0 !important;
+                transition: all 0.3s ease !important;
+            }
+
+            .cms-edit-mode [data-edit-type="hero-section"]:hover > .cms-edit-icon {
+                opacity: 1 !important;
+                transform: scale(1.1) !important;
+                background: rgba(239, 68, 68, 1) !important;
                 animation: pulse 2s infinite !important;
             }
 
             @keyframes pulse {
                 0%, 100% {
-                    transform: scale(1);
-                }
-                50% {
                     transform: scale(1.1);
                 }
-            }
-
-            .cms-edit-mode [data-edit-type="hero-section"]:hover > .cms-edit-icon {
-                transform: scale(1.2) !important;
-                background: rgba(239, 68, 68, 1) !important;
+                50% {
+                    transform: scale(1.2);
+                }
             }
         `;
         document.head.appendChild(style);
@@ -372,12 +456,18 @@
             if (contentType === 'hero-section') {
                 editIcon.innerHTML = '🎬';
                 editIcon.title = 'Edit Hero Section (Background + Videos)';
+            } else if (contentType === 'slider') {
+                editIcon.innerHTML = '🎠';
+                editIcon.title = 'Manage Slider Images';
             } else if (contentType === 'image' || contentType === 'background-image') {
                 editIcon.innerHTML = '📷';
                 editIcon.title = 'Edit Image';
             } else if (contentType === 'video') {
                 editIcon.innerHTML = '🎥';
                 editIcon.title = 'Edit Video';
+            } else if (contentType === 'button') {
+                editIcon.innerHTML = '🔗';
+                editIcon.title = 'Edit Button (Text + Link)';
             } else {
                 editIcon.innerHTML = '✏️';
                 editIcon.title = 'Edit Text';
@@ -437,11 +527,32 @@
         if (contentType === 'hero-section') {
             openHeroSectionEditor();
             return;
+        } else if (contentType === 'slider') {
+            window.openSliderEditor(element);
+            return;
+        } else if (contentType === 'button') {
+            const currentText = element.getAttribute('data-edit-text') || element.textContent;
+            const currentLink = element.getAttribute('data-edit-link') || element.href;
+
+            modalBody.innerHTML = `
+                <div class="cms-form-group">
+                    <label>Button Text:</label>
+                    <input type="text" id="buttonText" value="${currentText}" placeholder="Enter button text">
+                </div>
+                <div class="cms-form-group">
+                    <label>Button Link (URL):</label>
+                    <input type="url" id="buttonLink" value="${currentLink}" placeholder="https://...">
+                </div>
+                <div class="cms-form-actions">
+                    <button class="cms-btn cms-btn-secondary" onclick="window.cmsCloseModal()">Cancel</button>
+                    <button class="cms-btn" onclick="window.cmsSaveButton('${elementId}')">Save</button>
+                </div>
+            `;
         } else if (contentType === 'text') {
             modalBody.innerHTML = `
                 <div class="cms-form-group">
                     <label>Content:</label>
-                    <textarea id="editContent">${element.textContent}</textarea>
+                    <textarea id="editContent">${element.innerHTML}</textarea>
                 </div>
                 <div class="cms-form-actions">
                     <button class="cms-btn cms-btn-secondary" onclick="window.cmsCloseModal()">Cancel</button>
@@ -727,7 +838,7 @@
             });
 
             if (response.ok) {
-                element.textContent = content;
+                element.innerHTML = content;
                 closeModal();
                 showNotification('Content saved successfully!');
             } else {
@@ -736,6 +847,46 @@
         } catch (error) {
             console.error('Save error:', error);
             showNotification('Failed to save content', 'error');
+        }
+    }
+
+    // Save button content (text + link)
+    async function saveButton(elementId) {
+        const buttonText = document.getElementById('buttonText').value;
+        const buttonLink = document.getElementById('buttonLink').value;
+        const element = document.querySelector(`[data-edit-id="${elementId}"]`);
+
+        const buttonData = {
+            text: buttonText,
+            link: buttonLink
+        };
+
+        try {
+            const response = await fetch(`/api/content/${WEB_ID}/${PAGE_ID}/${elementId}`, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                credentials: 'include',
+                body: JSON.stringify({
+                    content: JSON.stringify(buttonData),
+                    contentType: 'button'
+                })
+            });
+
+            if (response.ok) {
+                element.textContent = buttonText;
+                element.href = buttonLink;
+                element.setAttribute('data-edit-text', buttonText);
+                element.setAttribute('data-edit-link', buttonLink);
+                closeModal();
+                showNotification('Button saved successfully!');
+            } else {
+                showNotification('Failed to save button', 'error');
+            }
+        } catch (error) {
+            console.error('Save error:', error);
+            showNotification('Failed to save button', 'error');
         }
     }
 
@@ -858,6 +1009,7 @@
     // Expose functions to window for onclick handlers
     window.cmsCloseModal = closeModal;
     window.cmsSaveText = saveText;
+    window.cmsSaveButton = saveButton;
     window.cmsSaveMedia = saveMedia;
     window.cmsSaveHeroSection = saveHeroSection;
 

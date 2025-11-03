@@ -4,7 +4,8 @@
       "Bash(dir /s \"c:\\Users\\S2\\Documents\\Wolf\\work\\website\")",
       "Bash(dir:*)",
       "Bash(npm install)",
-      "Bash(node scripts/test-connection.js:*)"
+      "Bash(node scripts/test-connection.js:*)",
+      "Bash(\"C:\\Users\\S2\\Documents\\Wolf\\work\\website\\routes\\analytics.js\")"
     ],
     "deny": [],
     "ask": []

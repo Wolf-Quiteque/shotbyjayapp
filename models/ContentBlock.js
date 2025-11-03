@@ -17,7 +17,7 @@ const contentBlockSchema = new mongoose.Schema({
   },
   contentType: {
     type: String,
-    enum: ['text', 'image', 'video'],
+    enum: ['text', 'image', 'video', 'background-image', 'button', 'slider'],
     required: true
   },
   content: {

@@ -116,8 +116,8 @@
                 <div class="col-xl-auto col">
                     <div class="site-logo">
                         <a href="index.html">
-                            <img class="logo-dark d-none d-lg-block" src="images/new/logo.webp" style="height: 70px; width: auto;" alt="rstate">
-                            <img class="logo-light d-lg-none" src="images/new/logowhite.png" style="height: 110px; width: auto;" alt="rstate">
+                            <img class="logo-dark d-none d-lg-block" src="images/new/logo.webp" style="height: 70px; width: auto;" alt="rstate" data-edit-id="header-logo-dark" data-edit-type="image">
+                            <img class="logo-light d-lg-none" src="images/new/logowhite.png" style="height: 110px; width: auto;" alt="rstate" data-edit-id="header-logo-light" data-edit-type="image">
                         </a>
                     </div>
                 </div>
@@ -294,7 +294,11 @@
   <a href="https://calendly.com/justjarediting/project-onboarding"
      target="_blank"
      rel="noopener"
-     class="btn btn-primary btn-lg">
+     class="btn btn-primary btn-lg"
+     data-edit-id="cta1-button"
+     data-edit-type="button"
+     data-edit-text="Book a Free Consultation"
+     data-edit-link="https://calendly.com/justjarediting/project-onboarding">
      Book a Free Consultation
   </a>
 </div>
@@ -341,7 +345,11 @@
   <a href="https://calendly.com/justjarediting/project-onboarding"
      target="_blank"
      rel="noopener"
-     class="btn btn-default-outline btn-lg">
+     class="btn btn-default-outline btn-lg"
+     data-edit-id="cta2-button"
+     data-edit-type="button"
+     data-edit-text="Book a Free Consultation"
+     data-edit-link="https://calendly.com/justjarediting/project-onboarding">
      Book a Free Consultation
   </a>
 </div>-
@@ -374,7 +382,11 @@
   <a href="https://calendly.com/justjarediting/project-onboarding"
      target="_blank"
      rel="noopener"
-     class="btn btn-default-outline btn-lg">
+     class="btn btn-default-outline btn-lg"
+     data-edit-id="cta3-button"
+     data-edit-type="button"
+     data-edit-text="Book a Free Consultation"
+     data-edit-link="https://calendly.com/justjarediting/project-onboarding">
      Book a Free Consultation
   </a>
 </div>
@@ -383,16 +395,19 @@
                     <div class="col-lg-6 col-12 mb-6">
                         <div class="row">
                             <div class="col-12 mb-lg-10">
-                                <div class="about-testimonial-active swiper-container">
+                                <div class="about-testimonial-active swiper-container"
+                                     data-edit-id="testimonial-slider"
+                                     data-edit-type="slider"
+                                     data-default-slides='[{"url":"images/new/Testimonial1.webp","alt":"Testimonial 1"},{"url":"images/new/Testimonial2.webp","alt":"Testimonial 2"}]'>
                                     <div class="swiper-wrapper">
                                         <div class="swiper-slide">
                                             <div class="about-image">
-                                                <img src="images/new/Testimonial1.webp" alt="Testimonial Image" data-edit-id="testimonial-1" data-edit-type="image">
+                                                <img src="images/new/Testimonial1.webp" alt="Testimonial Image">
                                             </div>
                                         </div>
                                         <div class="swiper-slide">
                                             <div class="about-image">
-                                                <img src="images/new/Testimonial2.webp" alt="Testimonial Image" data-edit-id="testimonial-2" data-edit-type="image">
+                                                <img src="images/new/Testimonial2.webp" alt="Testimonial Image">
                                             </div>
                                         </div>
                                     </div>
@@ -404,7 +419,7 @@
                                 </div>
                             </div>
                             <div class="text-center col-12 mt-10">
-                                <a href="https://www.instagram.com/shotbyjar/" class="btn btn-default-outline">VIEW COLLECTIONS</a>
+                                <a href="https://www.instagram.com/shotbyjar/" class="btn btn-default-outline" data-edit-id="collections-button" data-edit-type="button" data-edit-text="VIEW COLLECTIONS" data-edit-link="https://www.instagram.com/shotbyjar/">VIEW COLLECTIONS</a>
                             </div>
                         </div>
                     </div>
@@ -625,13 +640,13 @@
                             <!-- Contact Widget Start -->
                             <div class="col-lg-auto col-md-5 mb-6">
                                 <div class="footer-contact-widget">
-                                    <img class="logo" src="images/new/logo.webp" style="height: 100px; width: auto;" alt="GeekStudio">
+                                    <img class="logo" src="images/new/logo.webp" style="height: 100px; width: auto;" alt="GeekStudio" data-edit-id="footer-logo" data-edit-type="image">
                                     <ul class="contact-info">
-                                        <li>justjarediting@gmail.com</li>
-                                        <li> <a href="#">@shotsbyjar</a></li>
+                                        <li data-edit-id="footer-email" data-edit-type="text">justjarediting@gmail.com</li>
+                                        <li><a href="#" data-edit-id="footer-handle" data-edit-type="text">@shotsbyjar</a></li>
                                     </ul>
                                     <div class="social">
-                                        <a href="https://www.instagram.com/shotbyjar/"><i class="fa fa-instagram"></i></a>
+                                        <a href="https://www.instagram.com/shotbyjar/" data-edit-id="footer-instagram-link" data-edit-type="button" data-edit-text="Instagram" data-edit-link="https://www.instagram.com/shotbyjar/"><i class="fa fa-instagram"></i></a>
                                     </div>
                                 </div>
                             </div>
@@ -652,7 +667,7 @@
                 <div class="row">
 
                     <div class="col">
-<p class="copyright">ShotByJar is owned and operated by Edison’s Growth Partners LLC.<br>© 2025 All rights reserved.</p>
+<p class="copyright" data-edit-id="footer-copyright" data-edit-type="text">ShotByJar is owned and operated by Edison's Growth Partners LLC.<br>© 2025 All rights reserved.</p>
                     </div>
 
                 </div>
@@ -689,8 +704,9 @@
     <!-- Activation JS -->
     <script src="js/active.js"></script>
 
-    <!-- CMS Script -->
+    <!-- CMS Scripts -->
     <script src="js/cms.js"></script>
+    <script src="js/slider-editor.js"></script>
 
 
     <script>
