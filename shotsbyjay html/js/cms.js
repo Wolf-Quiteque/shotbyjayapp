@@ -177,7 +177,7 @@
 
             .cms-edit-toolbar {
                 position: fixed;
-                top: 0;
+                bottom: 0;
                 left: 0;
                 right: 0;
                 background: #1f2937;
@@ -187,7 +187,7 @@
                 justify-content: space-between;
                 align-items: center;
                 z-index: 10000;
-                box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+                box-shadow: 0 -2px 8px rgba(0,0,0,0.2);
             }
 
             .cms-edit-toolbar h3 {
@@ -295,7 +295,33 @@
             }
 
             body.cms-edit-mode {
-                padding-top: 50px;
+                padding-bottom: 60px;
+            }
+
+            /* Make hero section edit icon extra visible */
+            .cms-edit-mode [data-edit-type="hero-section"] > .cms-edit-icon {
+                width: 60px !important;
+                height: 60px !important;
+                font-size: 32px !important;
+                top: 20px !important;
+                right: 20px !important;
+                background: rgba(239, 68, 68, 0.95) !important;
+                border: 3px solid white !important;
+                animation: pulse 2s infinite !important;
+            }
+
+            @keyframes pulse {
+                0%, 100% {
+                    transform: scale(1);
+                }
+                50% {
+                    transform: scale(1.1);
+                }
+            }
+
+            .cms-edit-mode [data-edit-type="hero-section"]:hover > .cms-edit-icon {
+                transform: scale(1.2) !important;
+                background: rgba(239, 68, 68, 1) !important;
             }
         `;
         document.head.appendChild(style);
@@ -373,6 +399,12 @@
             // For images and videos, ensure they can display the icon properly
             if (contentType === 'image' || contentType === 'video') {
                 element.style.display = 'inline-block';
+            }
+
+            // For hero section, make sure it has proper positioning
+            if (contentType === 'hero-section') {
+                element.style.position = 'relative';
+                element.style.minHeight = '400px';
             }
 
             element.appendChild(editIcon);
@@ -778,7 +810,7 @@
         const notification = document.createElement('div');
         notification.style.cssText = `
             position: fixed;
-            top: 70px;
+            top: 20px;
             right: 20px;
             padding: 16px 24px;
             background: ${type === 'success' ? '#10b981' : '#ef4444'};
