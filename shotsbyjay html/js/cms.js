@@ -842,15 +842,18 @@
 
     // Save Hero Section Changes
     async function saveHeroSection() {
-        showNotification('Saving hero section changes...');
-
         const updates = [
-            { id: 'hero-bg-image', type: 'background-image', fileId: 'bgFile', urlId: 'bgUrl' },
-            { id: 'main-video', type: 'video', fileId: 'mainVideoFile', urlId: 'mainVideoUrl' },
-            { id: 'reel-1', type: 'video', fileId: 'reel1File', urlId: 'reel1Url' },
-            { id: 'reel-2', type: 'video', fileId: 'reel2File', urlId: 'reel2Url' },
-            { id: 'reel-3', type: 'video', fileId: 'reel3File', urlId: 'reel3Url' }
+            { id: 'hero-bg-image', type: 'background-image', fileId: 'bgFile', urlId: 'bgUrl', label: 'Background' },
+            { id: 'main-video', type: 'video', fileId: 'mainVideoFile', urlId: 'mainVideoUrl', label: 'Main Video' },
+            { id: 'reel-1', type: 'video', fileId: 'reel1File', urlId: 'reel1Url', label: 'Reel 1' },
+            { id: 'reel-2', type: 'video', fileId: 'reel2File', urlId: 'reel2Url', label: 'Reel 2' },
+            { id: 'reel-3', type: 'video', fileId: 'reel3File', urlId: 'reel3Url', label: 'Reel 3' }
         ];
+
+        // Count how many files need uploading
+        const filesToUpload = updates.filter(u => document.getElementById(u.fileId).files.length > 0);
+
+        let currentFileNotif = null;
 
         for (const update of updates) {
             const fileInput = document.getElementById(update.fileId);
@@ -859,8 +862,32 @@
 
             // Upload file if selected
             if (fileInput.files.length > 0) {
+                const file = fileInput.files[0];
+                const isVideo = file.type.startsWith('video/');
                 const formData = new FormData();
-                formData.append('file', fileInput.files[0]);
+                formData.append('file', file);
+
+                // Create persistent notification for this file
+                currentFileNotif = showNotification(
+                    `Uploading ${update.label}...`,
+                    'info',
+                    true
+                );
+
+                // Progress simulation
+                let progress = 0;
+                const progressInterval = setInterval(() => {
+                    progress += isVideo ? 2 : 5;
+                    if (progress >= 90) {
+                        clearInterval(progressInterval);
+                        progress = 90;
+                    }
+                    updateNotification(
+                        currentFileNotif,
+                        `Optimizing ${update.label}...${isVideo ? ' (1-2 min)' : ''}`,
+                        progress
+                    );
+                }, isVideo ? 1000 : 500);
 
                 try {
                     const uploadResponse = await fetch('/api/upload', {
@@ -869,16 +896,31 @@
                         body: formData
                     });
 
+                    clearInterval(progressInterval);
+
                     if (uploadResponse.ok) {
                         const uploadData = await uploadResponse.json();
                         mediaUrl = uploadData.url;
+
+                        // Show success for this file
+                        if (uploadData.compressionRatio && uploadData.compressionRatio > 0) {
+                            closeNotification(
+                                currentFileNotif,
+                                `✅ ${update.label} uploaded! (${uploadData.compressionRatio}% smaller)`,
+                                'success'
+                            );
+                        } else {
+                            closeNotification(currentFileNotif, `✅ ${update.label} uploaded!`, 'success');
+                        }
                     } else {
-                        showNotification(`Failed to upload ${update.id}`, 'error');
+                        clearInterval(progressInterval);
+                        closeNotification(currentFileNotif, `❌ Failed to upload ${update.label}`, 'error');
                         continue;
                     }
                 } catch (error) {
                     console.error(`Upload error for ${update.id}:`, error);
-                    showNotification(`Failed to upload ${update.id}`, 'error');
+                    clearInterval(progressInterval);
+                    closeNotification(currentFileNotif, `❌ Failed to upload ${update.label}`, 'error');
                     continue;
                 }
             }
@@ -1010,39 +1052,86 @@
             const file = fileInput.files[0];
             const isVideo = file.type.startsWith('video/');
 
-            try {
-                if (isVideo) {
-                    showNotification('Uploading and optimizing video... This may take 1-2 minutes.', 'info');
-                } else {
-                    showNotification('Uploading and optimizing image...', 'info');
+            // Create persistent notification
+            const uploadNotif = showNotification(
+                isVideo ? 'Uploading and optimizing video...' : 'Uploading and optimizing image...',
+                'info',
+                true
+            );
+
+            // Simulate progress for user feedback (since we don't have real progress from server)
+            let progress = 0;
+            let elapsedSeconds = 0;
+            const progressInterval = setInterval(() => {
+                progress += isVideo ? 1 : 5; // Very slow progress for videos
+                elapsedSeconds += isVideo ? 1 : 0.5;
+
+                if (progress >= 90) {
+                    progress = 90; // Stay at 90% until complete
                 }
+
+                let message = isVideo ? 'Optimizing video...' : 'Optimizing image...';
+                if (isVideo && elapsedSeconds > 60) {
+                    message = 'Still optimizing... Large videos can take 2-5 minutes';
+                } else if (isVideo) {
+                    message = `Optimizing video... (${Math.floor(elapsedSeconds)}s)`;
+                }
+
+                updateNotification(uploadNotif, message, progress);
+            }, isVideo ? 1000 : 500);
+
+            try {
+                console.log('📤 Starting upload:', file.name, `(${(file.size / (1024 * 1024)).toFixed(1)}MB)`);
+
+                // Create an AbortController for timeout handling
+                const controller = new AbortController();
+                const timeout = setTimeout(() => {
+                    console.warn('⚠️ Upload taking longer than 5 minutes');
+                    updateNotification(uploadNotif, '⚠️ Upload is taking longer than expected... Please wait', 90);
+                }, 5 * 60 * 1000); // 5 minute warning
 
                 const uploadResponse = await fetch('/api/upload', {
                     method: 'POST',
                     credentials: 'include',
-                    body: formData
+                    body: formData,
+                    signal: controller.signal
                 });
+
+                clearTimeout(timeout);
+
+                clearInterval(progressInterval);
 
                 if (uploadResponse.ok) {
                     const uploadData = await uploadResponse.json();
+                    console.log('✅ Upload successful:', uploadData);
                     mediaUrl = uploadData.url;
 
-                    // Show compression savings
+                    // Show completion with compression savings
                     if (uploadData.compressionRatio && uploadData.compressionRatio > 0) {
                         const format = uploadData.mimetype.includes('webp') ? 'WebP' : 'WebM';
                         const originalMB = (uploadData.originalSize / (1024 * 1024)).toFixed(1);
                         const optimizedMB = (uploadData.size / (1024 * 1024)).toFixed(1);
-                        showNotification(`✅ Uploaded! ${originalMB}MB → ${optimizedMB}MB (${uploadData.compressionRatio}% smaller as ${format})`);
+                        closeNotification(
+                            uploadNotif,
+                            `✅ Upload Complete!<br>${originalMB}MB → ${optimizedMB}MB (${uploadData.compressionRatio}% smaller as ${format})`,
+                            'success'
+                        );
                     } else {
-                        showNotification('File uploaded successfully!');
+                        closeNotification(uploadNotif, '✅ File uploaded successfully!', 'success');
                     }
                 } else {
-                    showNotification('Failed to upload file', 'error');
+                    const errorData = await uploadResponse.text();
+                    console.error('❌ Upload failed:', uploadResponse.status, errorData);
+                    clearInterval(progressInterval);
+                    clearTimeout(timeout);
+                    closeNotification(uploadNotif, `❌ Upload failed (${uploadResponse.status})`, 'error');
                     return;
                 }
             } catch (error) {
-                console.error('Upload error:', error);
-                showNotification('Failed to upload file', 'error');
+                console.error('❌ Upload error:', error);
+                clearInterval(progressInterval);
+                if (timeout) clearTimeout(timeout);
+                closeNotification(uploadNotif, '❌ Upload failed: ' + error.message, 'error');
                 return;
             }
         }
@@ -1078,28 +1167,88 @@
         }
     }
 
-    // Show notification
-    function showNotification(message, type = 'success') {
+    // Track active upload notification
+    let activeUploadNotification = null;
+
+    // Show notification with optional persistence
+    function showNotification(message, type = 'success', persist = false) {
         const notification = document.createElement('div');
+
+        // Set background color based on type
+        let bgColor = '#10b981'; // success - green
+        if (type === 'error') bgColor = '#ef4444'; // error - red
+        if (type === 'info') bgColor = '#3b82f6'; // info - blue
+        if (type === 'warning') bgColor = '#f59e0b'; // warning - orange
+
         notification.style.cssText = `
             position: fixed;
             top: 20px;
             right: 20px;
             padding: 16px 24px;
-            background: ${type === 'success' ? '#10b981' : '#ef4444'};
+            background: ${bgColor};
             color: white;
-            border-radius: 4px;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+            border-radius: 6px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.3);
             z-index: 10002;
             animation: slideIn 0.3s ease-out;
+            font-weight: 500;
+            max-width: 400px;
+            min-width: 300px;
         `;
         notification.textContent = message;
         document.body.appendChild(notification);
 
-        setTimeout(() => {
+        if (persist) {
+            // Store reference for updates
+            activeUploadNotification = notification;
+            return notification;
+        } else {
+            // Auto-dismiss after 3 seconds
+            setTimeout(() => {
+                notification.style.animation = 'slideOut 0.3s ease-out';
+                setTimeout(() => notification.remove(), 300);
+            }, 3000);
+        }
+    }
+
+    // Update persistent notification
+    function updateNotification(notification, message, progress = null) {
+        if (!notification || !notification.parentElement) return;
+
+        if (progress !== null) {
+            notification.innerHTML = `
+                <div style="margin-bottom: 8px;">${message}</div>
+                <div style="background: rgba(255,255,255,0.3); height: 6px; border-radius: 3px; overflow: hidden;">
+                    <div style="background: white; height: 100%; width: ${progress}%; transition: width 0.3s ease;"></div>
+                </div>
+                <div style="text-align: right; font-size: 12px; margin-top: 4px; opacity: 0.9;">${progress}%</div>
+            `;
+        } else {
+            notification.textContent = message;
+        }
+    }
+
+    // Close persistent notification with animation
+    function closeNotification(notification, finalMessage = null, finalType = 'success') {
+        if (!notification || !notification.parentElement) return;
+
+        if (finalMessage) {
+            // Update to final message
+            let bgColor = finalType === 'success' ? '#10b981' : '#ef4444';
+            notification.style.background = bgColor;
+            notification.innerHTML = finalMessage;
+
+            // Then fade out
+            setTimeout(() => {
+                notification.style.animation = 'slideOut 0.3s ease-out';
+                setTimeout(() => notification.remove(), 300);
+            }, 3000);
+        } else {
             notification.style.animation = 'slideOut 0.3s ease-out';
             setTimeout(() => notification.remove(), 300);
-        }, 3000);
+        }
+
+        activeUploadNotification = null;
     }
 
     // Add animation styles

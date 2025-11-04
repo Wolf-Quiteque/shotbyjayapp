@@ -152,7 +152,14 @@ async function optimizeMedia(fileBuffer, filename, mimetype) {
   if (mimetype.startsWith('image/')) {
     return optimizeImage(fileBuffer, filename);
   } else if (mimetype.startsWith('video/')) {
-    return optimizeVideo(fileBuffer, filename);
+    // TEMPORARY: Skip video optimization to prevent server crashes
+    // Videos are uploaded as-is without WebM conversion
+    console.log('⚠️  Video optimization disabled - uploading original file');
+    return {
+      buffer: fileBuffer,
+      filename: filename,
+      mimetype: mimetype
+    };
   } else {
     // Unknown type, return as-is
     return {

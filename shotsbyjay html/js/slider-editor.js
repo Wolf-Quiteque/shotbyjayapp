@@ -150,6 +150,20 @@ window.uploadSlideImage = async function(index, input) {
     const formData = new FormData();
     formData.append('file', file);
 
+    // Create persistent notification
+    const uploadNotif = createPersistentNotification('Uploading image...', 'info');
+
+    // Progress simulation
+    let progress = 0;
+    const progressInterval = setInterval(() => {
+        progress += 5;
+        if (progress >= 90) {
+            clearInterval(progressInterval);
+            progress = 90;
+        }
+        updatePersistentNotification(uploadNotif, 'Optimizing image...', progress);
+    }, 500);
+
     try {
         const response = await fetch('/api/upload', {
             method: 'POST',
@@ -157,23 +171,31 @@ window.uploadSlideImage = async function(index, input) {
             body: formData
         });
 
+        clearInterval(progressInterval);
+
         if (response.ok) {
             const data = await response.json();
             window.tempSliderImages[index].url = data.url;
             refreshSliderList();
 
-            // Show compression savings if available
+            // Show completion with compression savings
             if (data.compressionRatio && data.compressionRatio > 0) {
-                showNotification(`Image uploaded! (${data.compressionRatio}% smaller as WebP)`);
+                closePersistentNotification(
+                    uploadNotif,
+                    `✅ Image uploaded! (${data.compressionRatio}% smaller as WebP)`,
+                    'success'
+                );
             } else {
-                showNotification('Image uploaded successfully!');
+                closePersistentNotification(uploadNotif, '✅ Image uploaded successfully!', 'success');
             }
         } else {
-            showNotification('Failed to upload image', 'error');
+            clearInterval(progressInterval);
+            closePersistentNotification(uploadNotif, '❌ Failed to upload image', 'error');
         }
     } catch (error) {
         console.error('Upload error:', error);
-        showNotification('Failed to upload image', 'error');
+        clearInterval(progressInterval);
+        closePersistentNotification(uploadNotif, '❌ Upload failed: ' + error.message, 'error');
     }
 };
 
@@ -302,6 +324,69 @@ window.saveSliderImages = async function(elementId) {
         showNotification('Failed to save slider: ' + error.message, 'error');
     }
 };
+
+// Persistent notification helpers for slider editor
+function createPersistentNotification(message, type = 'info') {
+    const notification = document.createElement('div');
+
+    let bgColor = '#10b981'; // success - green
+    if (type === 'error') bgColor = '#ef4444'; // error - red
+    if (type === 'info') bgColor = '#3b82f6'; // info - blue
+    if (type === 'warning') bgColor = '#f59e0b'; // warning - orange
+
+    notification.style.cssText = `
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        padding: 16px 24px;
+        background: ${bgColor};
+        color: white;
+        border-radius: 6px;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+        z-index: 10002;
+        animation: slideIn 0.3s ease-out;
+        font-weight: 500;
+        max-width: 400px;
+        min-width: 300px;
+    `;
+    notification.textContent = message;
+    document.body.appendChild(notification);
+    return notification;
+}
+
+function updatePersistentNotification(notification, message, progress = null) {
+    if (!notification || !notification.parentElement) return;
+
+    if (progress !== null) {
+        notification.innerHTML = `
+            <div style="margin-bottom: 8px;">${message}</div>
+            <div style="background: rgba(255,255,255,0.3); height: 6px; border-radius: 3px; overflow: hidden;">
+                <div style="background: white; height: 100%; width: ${progress}%; transition: width 0.3s ease;"></div>
+            </div>
+            <div style="text-align: right; font-size: 12px; margin-top: 4px; opacity: 0.9;">${progress}%</div>
+        `;
+    } else {
+        notification.textContent = message;
+    }
+}
+
+function closePersistentNotification(notification, finalMessage = null, finalType = 'success') {
+    if (!notification || !notification.parentElement) return;
+
+    if (finalMessage) {
+        let bgColor = finalType === 'success' ? '#10b981' : '#ef4444';
+        notification.style.background = bgColor;
+        notification.innerHTML = finalMessage;
+
+        setTimeout(() => {
+            notification.style.animation = 'slideOut 0.3s ease-out';
+            setTimeout(() => notification.remove(), 300);
+        }, 3000);
+    } else {
+        notification.style.animation = 'slideOut 0.3s ease-out';
+        setTimeout(() => notification.remove(), 300);
+    }
+}
 
 function showNotification(message, type = 'success') {
     const notification = document.createElement('div');
