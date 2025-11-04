@@ -4,6 +4,7 @@ const multer = require('multer');
 const { uploadToR2, deleteFromR2 } = require('../config/r2');
 const authMiddleware = require('../middleware/auth');
 const Media = require('../models/Media');
+const { optimizeMedia } = require('../utils/media-optimizer');
 
 // Configure multer for memory storage
 const upload = multer({
@@ -24,6 +25,7 @@ const upload = multer({
 /**
  * POST /api/upload
  * Upload media to Cloudflare R2 and save to database
+ * Automatically optimizes images (WebP) and videos (WebM)
  * Requires authentication
  */
 router.post('/', authMiddleware, upload.single('file'), async (req, res) => {
@@ -32,15 +34,27 @@ router.post('/', authMiddleware, upload.single('file'), async (req, res) => {
       return res.status(400).json({ error: 'No file uploaded' });
     }
 
-    // Upload to R2
-    const fileUrl = await uploadToR2(
+    const originalSize = req.file.size;
+    console.log(`📤 Uploading: ${req.file.originalname} (${Math.round(originalSize / 1024)}KB)`);
+
+    // Optimize media (convert to WebP/WebM)
+    const optimized = await optimizeMedia(
       req.file.buffer,
       req.file.originalname,
       req.file.mimetype
     );
 
+    console.log(`💾 Optimized: ${optimized.filename} (${Math.round(optimized.buffer.length / 1024)}KB)`);
+
+    // Upload optimized file to R2
+    const fileUrl = await uploadToR2(
+      optimized.buffer,
+      optimized.filename,
+      optimized.mimetype
+    );
+
     // Determine media type
-    const mediaType = req.file.mimetype.startsWith('image/') ? 'image' : 'video';
+    const mediaType = optimized.mimetype.startsWith('image/') ? 'image' : 'video';
 
     // Extract filename from URL
     const filename = fileUrl.split('/').pop();
@@ -50,8 +64,8 @@ router.post('/', authMiddleware, upload.single('file'), async (req, res) => {
       filename: filename,
       originalName: req.file.originalname,
       url: fileUrl,
-      mimetype: req.file.mimetype,
-      size: req.file.size,
+      mimetype: optimized.mimetype,
+      size: optimized.buffer.length,
       mediaType: mediaType,
       webId: req.body.webId || 'shotbyjar',
       uploadedBy: req.admin?._id
@@ -59,15 +73,22 @@ router.post('/', authMiddleware, upload.single('file'), async (req, res) => {
 
     await media.save();
 
+    const compressionRatio = Math.round((1 - optimized.buffer.length / originalSize) * 100);
+
     res.json({
       success: true,
       url: fileUrl,
-      filename: req.file.originalname,
-      mimetype: req.file.mimetype,
-      size: req.file.size,
+      filename: optimized.filename,
+      originalFilename: req.file.originalname,
+      mimetype: optimized.mimetype,
+      size: optimized.buffer.length,
+      originalSize: originalSize,
+      compressionRatio: compressionRatio,
       mediaId: media._id,
       mediaType: mediaType
     });
+
+    console.log(`✅ Upload complete: ${fileUrl} (${compressionRatio}% smaller)`);
   } catch (error) {
     console.error('Upload error:', error);
     res.status(500).json({ error: 'Failed to upload file' });

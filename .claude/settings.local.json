@@ -5,7 +5,12 @@
       "Bash(dir:*)",
       "Bash(npm install)",
       "Bash(node scripts/test-connection.js:*)",
-      "Bash(\"C:\\Users\\S2\\Documents\\Wolf\\work\\website\\routes\\analytics.js\")"
+      "Bash(\"C:\\Users\\S2\\Documents\\Wolf\\work\\website\\routes\\analytics.js\")",
+      "Bash(findstr:*)",
+      "Bash(move /Y .env.tmp .env:*)",
+      "Bash(taskkill:*)",
+      "Bash(npm run dev:*)",
+      "Bash(npm install:*)"
     ],
     "deny": [],
     "ask": []

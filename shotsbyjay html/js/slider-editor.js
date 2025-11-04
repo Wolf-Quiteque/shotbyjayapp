@@ -161,7 +161,13 @@ window.uploadSlideImage = async function(index, input) {
             const data = await response.json();
             window.tempSliderImages[index].url = data.url;
             refreshSliderList();
-            showNotification('Image uploaded successfully!');
+
+            // Show compression savings if available
+            if (data.compressionRatio && data.compressionRatio > 0) {
+                showNotification(`Image uploaded! (${data.compressionRatio}% smaller as WebP)`);
+            } else {
+                showNotification('Image uploaded successfully!');
+            }
         } else {
             showNotification('Failed to upload image', 'error');
         }
@@ -219,10 +225,14 @@ window.saveSliderImages = async function(elementId) {
     // Filter out empty slides
     const validSlides = window.tempSliderImages.filter(slide => slide.url && slide.url.trim() !== '');
 
+    console.log('💾 Saving slider with', validSlides.length, 'images:', validSlides);
+
     if (validSlides.length === 0) {
         alert('Please add at least one image to the slider.');
         return;
     }
+
+    showNotification('Saving slider...', 'info');
 
     try {
         const response = await fetch(`/api/content/${window.WEB_ID}/${window.PAGE_ID}/${elementId}`, {
@@ -237,19 +247,27 @@ window.saveSliderImages = async function(elementId) {
             })
         });
 
+        console.log('📡 Save response status:', response.status);
+
         if (response.ok) {
+            const responseData = await response.json();
+            console.log('✅ Save successful:', responseData);
+
             // Update the slider on the page
             const sliderElement = document.querySelector(`[data-edit-id="${elementId}"]`);
             if (sliderElement) {
                 const wrapper = sliderElement.querySelector('.swiper-wrapper');
                 if (wrapper) {
+                    console.log('🔄 Updating slider UI with', validSlides.length, 'slides');
                     wrapper.innerHTML = '';
-                    validSlides.forEach(slide => {
+                    validSlides.forEach((slide, index) => {
+                        console.log(`Adding slide ${index + 1}:`, slide.url);
                         const slideDiv = document.createElement('div');
                         slideDiv.className = 'swiper-slide';
                         slideDiv.innerHTML = `
                             <div class="about-image">
-                                <img src="${slide.url}" alt="${slide.alt || 'Slide image'}">
+                                <img src="${slide.url}" alt="${slide.alt || 'Slide image'}"
+                                     onerror="console.error('Failed to load image:', this.src)">
                             </div>
                         `;
                         wrapper.appendChild(slideDiv);
@@ -257,35 +275,56 @@ window.saveSliderImages = async function(elementId) {
 
                     // Reinitialize Swiper
                     if (window.Swiper && sliderElement.swiper) {
+                        console.log('🔄 Reinitializing Swiper');
                         sliderElement.swiper.update();
+                    }
+
+                    // Update the contentOverrides cache
+                    if (window.contentOverrides) {
+                        window.contentOverrides[elementId] = {
+                            content: JSON.stringify(validSlides),
+                            contentType: 'slider'
+                        };
+                        console.log('✅ Updated contentOverrides cache');
                     }
                 }
             }
 
             window.cmsCloseModal();
-            showNotification('Slider updated successfully!');
+            showNotification('Slider updated successfully! Refresh the page to see changes persist.');
         } else {
-            showNotification('Failed to save slider', 'error');
+            const errorText = await response.text();
+            console.error('❌ Save failed:', response.status, errorText);
+            showNotification(`Failed to save slider (${response.status})`, 'error');
         }
     } catch (error) {
-        console.error('Save error:', error);
-        showNotification('Failed to save slider', 'error');
+        console.error('❌ Save error:', error);
+        showNotification('Failed to save slider: ' + error.message, 'error');
     }
 };
 
 function showNotification(message, type = 'success') {
     const notification = document.createElement('div');
+
+    // Set background color based on type
+    let bgColor = '#10b981'; // success - green
+    if (type === 'error') bgColor = '#ef4444'; // error - red
+    if (type === 'info') bgColor = '#3b82f6'; // info - blue
+    if (type === 'warning') bgColor = '#f59e0b'; // warning - orange
+
     notification.style.cssText = `
         position: fixed;
         top: 20px;
         right: 20px;
         padding: 16px 24px;
-        background: ${type === 'success' ? '#10b981' : '#ef4444'};
+        background: ${bgColor};
         color: white;
-        border-radius: 4px;
-        box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+        border-radius: 6px;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.3);
         z-index: 10002;
         animation: slideIn 0.3s ease-out;
+        font-weight: 500;
+        max-width: 400px;
     `;
     notification.textContent = message;
     document.body.appendChild(notification);

@@ -363,46 +363,66 @@
 
             .cms-rich-editor {
                 width: 100%;
-                min-height: 200px;
-                padding: 15px;
-                border: 2px solid #ddd;
-                border-radius: 4px;
-                font-size: 14px;
-                font-family: inherit;
-                background: white;
+                min-height: 250px;
+                padding: 20px;
+                border: 2px solid #e5e7eb;
+                border-radius: 6px;
+                font-size: 15px;
+                line-height: 1.6;
+                font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+                background: #ffffff;
                 overflow-y: auto;
-                max-height: 400px;
+                max-height: 450px;
+                color: #1f2937;
+                transition: border-color 0.2s, box-shadow 0.2s;
             }
 
             .cms-rich-editor:focus {
                 outline: none;
                 border-color: #3b82f6;
+                box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+            }
+
+            .cms-rich-editor:empty:before {
+                content: 'Start typing here... (Select text to format)';
+                color: #9ca3af;
+                font-style: italic;
             }
 
             .cms-editor-toolbar {
                 display: flex;
-                gap: 5px;
-                margin-bottom: 10px;
-                padding: 8px;
-                background: #f3f4f6;
-                border-radius: 4px;
+                gap: 6px;
+                margin-bottom: 12px;
+                padding: 10px;
+                background: #f9fafb;
+                border: 1px solid #e5e7eb;
+                border-radius: 6px;
                 flex-wrap: wrap;
+                align-items: center;
             }
 
             .cms-format-btn {
-                padding: 6px 12px;
+                padding: 8px 14px;
                 background: white;
-                border: 1px solid #ddd;
-                border-radius: 3px;
+                border: 1px solid #d1d5db;
+                border-radius: 4px;
                 cursor: pointer;
                 font-size: 14px;
                 font-weight: bold;
-                transition: all 0.2s;
+                transition: all 0.15s;
+                color: #374151;
+                min-width: 36px;
+                display: inline-flex;
+                align-items: center;
+                justify-content: center;
             }
 
             .cms-format-btn:hover {
-                background: #e5e7eb;
-                border-color: #9ca3af;
+                background: #f3f4f6;
+                border-color: #3b82f6;
+                color: #3b82f6;
+                transform: translateY(-1px);
+                box-shadow: 0 2px 4px rgba(0,0,0,0.1);
             }
 
             .cms-format-btn:active {
@@ -605,20 +625,23 @@
             modalBody.innerHTML = `
                 <div class="cms-form-group">
                     <label>Content:</label>
+                    <p style="color: #666; font-size: 13px; margin-bottom: 10px;">Use the formatting toolbar below to style your text. Select text and click a button to apply formatting.</p>
                     <div class="cms-editor-toolbar">
                         <select id="fontSize" class="cms-format-btn" title="Font Size">
-                            <option value="">Size</option>
+                            <option value="">Font Size</option>
                             <option value="1">Small</option>
                             <option value="3">Normal</option>
                             <option value="5">Large</option>
-                            <option value="7">Huge</option>
+                            <option value="7">Extra Large</option>
                         </select>
-                        <button type="button" class="cms-format-btn" onclick="document.execCommand('bold', false, null)" title="Bold"><b>B</b></button>
-                        <button type="button" class="cms-format-btn" onclick="document.execCommand('italic', false, null)" title="Italic"><i>I</i></button>
-                        <button type="button" class="cms-format-btn" onclick="document.execCommand('underline', false, null)" title="Underline"><u>U</u></button>
+                        <button type="button" class="cms-format-btn" onclick="document.execCommand('bold', false, null)" title="Bold (Ctrl+B)"><b>B</b></button>
+                        <button type="button" class="cms-format-btn" onclick="document.execCommand('italic', false, null)" title="Italic (Ctrl+I)"><i>I</i></button>
+                        <button type="button" class="cms-format-btn" onclick="document.execCommand('underline', false, null)" title="Underline (Ctrl+U)"><u>U</u></button>
                         <button type="button" class="cms-format-btn" onclick="document.execCommand('strikeThrough', false, null)" title="Strikethrough"><s>S</s></button>
+                        <button type="button" class="cms-format-btn" onclick="document.execCommand('removeFormat', false, null)" title="Clear Formatting">✖</button>
                     </div>
                     <div id="editContent" contenteditable="true" class="cms-rich-editor">${element.innerHTML}</div>
+                    <p style="color: #999; font-size: 12px; margin-top: 8px;">💡 Tip: You can also use keyboard shortcuts like Ctrl+B for bold, Ctrl+I for italic, Ctrl+U for underline</p>
                 </div>
                 <div class="cms-form-actions">
                     <button class="cms-btn cms-btn-secondary" onclick="window.cmsCloseModal()">Cancel</button>
@@ -631,8 +654,13 @@
                 document.getElementById('fontSize').addEventListener('change', (e) => {
                     if (e.target.value) {
                         document.execCommand('fontSize', false, e.target.value);
+                        e.target.value = ''; // Reset selector
                     }
                 });
+
+                // Focus on the editor
+                const editor = document.getElementById('editContent');
+                editor.focus();
             }, 0);
         } else if (contentType === 'background-image') {
             // Extract URL from background-image style
@@ -979,9 +1007,16 @@
         if (fileInput.files.length > 0) {
             const formData = new FormData();
             formData.append('file', fileInput.files[0]);
+            const file = fileInput.files[0];
+            const isVideo = file.type.startsWith('video/');
 
             try {
-                showNotification('Uploading file...');
+                if (isVideo) {
+                    showNotification('Uploading and optimizing video... This may take 1-2 minutes.', 'info');
+                } else {
+                    showNotification('Uploading and optimizing image...', 'info');
+                }
+
                 const uploadResponse = await fetch('/api/upload', {
                     method: 'POST',
                     credentials: 'include',
@@ -991,6 +1026,16 @@
                 if (uploadResponse.ok) {
                     const uploadData = await uploadResponse.json();
                     mediaUrl = uploadData.url;
+
+                    // Show compression savings
+                    if (uploadData.compressionRatio && uploadData.compressionRatio > 0) {
+                        const format = uploadData.mimetype.includes('webp') ? 'WebP' : 'WebM';
+                        const originalMB = (uploadData.originalSize / (1024 * 1024)).toFixed(1);
+                        const optimizedMB = (uploadData.size / (1024 * 1024)).toFixed(1);
+                        showNotification(`✅ Uploaded! ${originalMB}MB → ${optimizedMB}MB (${uploadData.compressionRatio}% smaller as ${format})`);
+                    } else {
+                        showNotification('File uploaded successfully!');
+                    }
                 } else {
                     showNotification('Failed to upload file', 'error');
                     return;
